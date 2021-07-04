@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         //progressBar.setIndeterminate(true);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        loadingDialog loadingDialog = new loadingDialog(MainActivity.this);
+        LoadingDialog loadingDialog = new LoadingDialog(MainActivity.this);
         mWebView.setWebViewClient(new MyWebViewClient(this,loadingDialog,this));
         // REMOTE RESOURCE
         mWebView.loadUrl(url);
