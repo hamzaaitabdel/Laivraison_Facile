@@ -3,5 +3,6 @@
     <style name="Theme.LaivraisonFacile" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
     <item name="android:windowActionBar">false</item>
     <item name="android:windowNoTitle">true</item>
+    <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

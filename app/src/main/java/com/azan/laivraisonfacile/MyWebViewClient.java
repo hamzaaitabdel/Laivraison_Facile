@@ -1,5 +1,6 @@
 package com.azan.laivraisonfacile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
@@ -32,7 +33,7 @@ class MyWebViewClient extends WebViewClient {
             Window window = activity.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(activity.getResources().getColor(R.color.purple_700));
+            window.setStatusBarColor(activity.getResources().getColor(R.color.statue_bar_color));
             Log.i("COLOR----->",view.getSolidColor()+"");
         }
         return true;
