@@ -4,9 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,7 +29,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mWebView = findViewById(R.id.activity_main_webview);
         swipeRefresh = findViewById(R.id.refreshLayout);
-
+        Runnable runnable = new Runnable(){
+            public void run() {
+                while (true){
+                    Log.i("fffffffffffffffff","ffffffffffff");
+                    ConnectivityManager manager =(ConnectivityManager) getApplicationContext()
+                            .getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+                    if (null == activeNetwork) {
+                        Log.i("fffffffffffffffff","nullllllllll");
+                        Intent intent = new Intent(getApplicationContext(),NoNetworkActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    }
+                }
+            }
+        };
+        runnable.run();
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

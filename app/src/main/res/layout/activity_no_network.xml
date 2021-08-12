@@ -7,7 +7,7 @@
     tools:context=".NoNetworkActivity">
 
     <WebView
-        android:id="@+id/activity_main_webview"
+        android:id="@+id/noConnection"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
