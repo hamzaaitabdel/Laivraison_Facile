@@ -6,6 +6,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,26 +19,29 @@ import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.snackbar.Snackbar;
+
+public class MainActivity extends AppCompatActivity implements InternetReceiver.OnConnectionListener {
     SwipeRefreshLayout swipeRefresh;
     private WebView mWebView;
+    private Snackbar snackbar;
+
     //TODO change this link HEEEEEEEre!!!!!!!
     private String url="https://www.codeur.ma/demo/_fh1iow";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registerReceiver(new InternetReceiver(),new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         mWebView = findViewById(R.id.activity_main_webview);
         swipeRefresh = findViewById(R.id.refreshLayout);
         Runnable runnable = new Runnable(){
             public void run() {
                 while (true){
-                    Log.i("fffffffffffffffff","ffffffffffff");
                     ConnectivityManager manager =(ConnectivityManager) getApplicationContext()
                             .getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
                     if (null == activeNetwork) {
-                        Log.i("fffffffffffffffff","nullllllllll");
                         Intent intent = new Intent(getApplicationContext(),NoNetworkActivity.class);
                         startActivity(intent);
                         finish();
@@ -73,5 +77,23 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onConnection(boolean isConnected) {
+        if(!isConnected){
+            snackbar = Snackbar.make(swipeRefresh,"You are offline",Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }else{
+            if(snackbar!=null){
+                snackbar.dismiss();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        InternetReceiver.onConnectionListener = this;
     }
 }
