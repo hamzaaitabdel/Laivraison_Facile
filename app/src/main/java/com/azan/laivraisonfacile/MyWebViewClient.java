@@ -8,14 +8,19 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.annotation.RequiresApi;
 
 class MyWebViewClient extends WebViewClient {
 
     Context context;
     MainActivity activity;
     LoadingDialog loadingDialog;
+    public boolean isConnected = true;
+    public OnRedirectToOffline redirectToOffline;
 
     public MyWebViewClient(Context c, final LoadingDialog loadingDialog, MainActivity mainActivity) {
         context=c;
@@ -47,4 +52,17 @@ class MyWebViewClient extends WebViewClient {
         },1000);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        if(!isConnected && !request.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
+            redirectToOffline.onRedirectToOffline();
+            return false;
+        }
+        return super.shouldOverrideUrlLoading(view, request);
+    }
+
+    interface OnRedirectToOffline{
+        void onRedirectToOffline();
+    }
 }

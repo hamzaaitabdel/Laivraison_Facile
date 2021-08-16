@@ -21,11 +21,12 @@ import android.webkit.WebView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements InternetReceiver.OnConnectionListener {
+public class MainActivity extends AppCompatActivity implements InternetReceiver.OnConnectionListener , MyWebViewClient.OnRedirectToOffline {
     SwipeRefreshLayout swipeRefresh;
     private WebView mWebView;
     private Snackbar snackbar;
     private boolean isConnected;
+    private MyWebViewClient client;
 
     //TODO change this link HEEEEEEEre!!!!!!!
     private String url="https://www.codeur.ma/demo/_fh1iow";
@@ -39,7 +40,18 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mWebView.reload();
+                if(isConnected){
+                    if(mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html") && mWebView.canGoBack()){
+                        mWebView.goBack();
+                    }else{
+                        mWebView.reload();
+                    }
+                }else{
+                    if(!mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
+                        mWebView.loadUrl("file:///android_asset/pas_de_connexion.html");
+                    }
+                }
+
                 swipeRefresh.setRefreshing(false);
             }
         });
@@ -47,24 +59,29 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         LoadingDialog loadingDialog = new LoadingDialog(MainActivity.this);
-        mWebView.setWebViewClient(new MyWebViewClient(this,loadingDialog,this));
+        client = new MyWebViewClient(this,loadingDialog,this);
+        client.redirectToOffline = this;
+        mWebView.setWebViewClient(client);
         // REMOTE RESOURCE
         mWebView.loadUrl(url);
 
         // LOCAL RESOURCE
         // mWebView.loadUrl("file:///android_asset/index.html");
+
+
     }
 
     @Override
     public void onBackPressed() {
-        if(mWebView.canGoBack()) {
-            if(isConnected){
+
+        if(isConnected){
+            if(mWebView.canGoBack()) {
                 mWebView.goBack();
                 return;
             }
-            if(mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
-                return;
-            }
+            super.onBackPressed();
+        }
+        if(!mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
             mWebView.loadUrl("file:///android_asset/pas_de_connexion.html");
             return;
         }
@@ -74,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     @Override
     public void onConnection(boolean isConnected) {
         this.isConnected = isConnected;
+        client.isConnected = isConnected;
         if(!isConnected){
             snackbar = Snackbar.make(swipeRefresh,"You are offline",Snackbar.LENGTH_SHORT);
             snackbar.show();
@@ -88,5 +106,10 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     protected void onResume() {
         super.onResume();
         InternetReceiver.onConnectionListener = this;
+    }
+
+    @Override
+    public void onRedirectToOffline() {
+        mWebView.loadUrl("file:///android_asset/pas_de_connexion.html");
     }
 }
