@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     SwipeRefreshLayout swipeRefresh;
     private WebView mWebView;
     private Snackbar snackbar;
+    private boolean isConnected;
 
     //TODO change this link HEEEEEEEre!!!!!!!
     private String url="https://www.codeur.ma/demo/_fh1iow";
@@ -35,22 +36,6 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         registerReceiver(new InternetReceiver(),new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         mWebView = findViewById(R.id.activity_main_webview);
         swipeRefresh = findViewById(R.id.refreshLayout);
-        Runnable runnable = new Runnable(){
-            public void run() {
-                while (true){
-                    ConnectivityManager manager =(ConnectivityManager) getApplicationContext()
-                            .getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
-                    if (null == activeNetwork) {
-                        Intent intent = new Intent(getApplicationContext(),NoNetworkActivity.class);
-                        startActivity(intent);
-                        finish();
-                        break;
-                    }
-                }
-            }
-        };
-        runnable.run();
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -73,14 +58,22 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     @Override
     public void onBackPressed() {
         if(mWebView.canGoBack()) {
-            mWebView.goBack();
-        } else {
-            super.onBackPressed();
+            if(isConnected){
+                mWebView.goBack();
+                return;
+            }
+            if(mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
+                return;
+            }
+            mWebView.loadUrl("file:///android_asset/pas_de_connexion.html");
+            return;
         }
+        super.onBackPressed();
     }
 
     @Override
     public void onConnection(boolean isConnected) {
+        this.isConnected = isConnected;
         if(!isConnected){
             snackbar = Snackbar.make(swipeRefresh,"You are offline",Snackbar.LENGTH_SHORT);
             snackbar.show();
