@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     private Snackbar snackbar;
     private boolean isConnected;
     private MyWebViewClient client;
+    private SharedPreferences prefs;
 
     //TODO change this link HEEEEEEEre!!!!!!!
     private String url="https://www.codeur.ma/demo/_fh1iow";
@@ -59,11 +61,13 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         LoadingDialog loadingDialog = new LoadingDialog(MainActivity.this);
+        prefs = getSharedPreferences("app_prefs",MODE_PRIVATE);
         client = new MyWebViewClient(this,loadingDialog,this);
         client.redirectToOffline = this;
+        client.prefs = prefs;
         mWebView.setWebViewClient(client);
         // REMOTE RESOURCE
-        mWebView.loadUrl(url);
+        mWebView.loadUrl(prefs.getString("last_visited",url));
 
         // LOCAL RESOURCE
         // mWebView.loadUrl("file:///android_asset/index.html");
@@ -77,6 +81,11 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         if(isConnected){
             if(mWebView.canGoBack()) {
                 mWebView.goBack();
+                if(!mWebView.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
+                    prefs.edit()
+                            .putString("last_visited",url)
+                            .apply();
+                }
                 return;
             }
             super.onBackPressed();

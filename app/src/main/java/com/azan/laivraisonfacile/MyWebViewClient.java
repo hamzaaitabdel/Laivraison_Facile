@@ -2,6 +2,7 @@ package com.azan.laivraisonfacile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +22,7 @@ class MyWebViewClient extends WebViewClient {
     LoadingDialog loadingDialog;
     public boolean isConnected = true;
     public OnRedirectToOffline redirectToOffline;
+    public SharedPreferences prefs;
 
     public MyWebViewClient(Context c, final LoadingDialog loadingDialog, MainActivity mainActivity) {
         context=c;
@@ -55,9 +57,15 @@ class MyWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        if(!isConnected && !request.getUrl().equals("file:///android_asset/pas_de_connexion.html")){
+        String url = request.getUrl().toString();
+        if(!isConnected && !url.equals("file:///android_asset/pas_de_connexion.html")) {
             redirectToOffline.onRedirectToOffline();
             return false;
+        }
+        if(!url.equals("file:///android_asset/pas_de_connexion.html")){
+            prefs.edit()
+                    .putString("last_visited",url)
+                    .apply();
         }
         return super.shouldOverrideUrlLoading(view, request);
     }
