@@ -1,24 +1,20 @@
-package com.azan.laivraisonfacile;
+package com.livraisonfacile.app;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.DownloadManager;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
+import android.os.Environment;
+import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -31,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     private SharedPreferences prefs;
 
     //TODO change this link HEEEEEEEre!!!!!!!
-    private String url="https://www.codeur.ma/demo/_fh1iow";
+    public static String url="https://www.codeur.ma/demo/_fh1iow";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +35,25 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         registerReceiver(new InternetReceiver(),new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         mWebView = findViewById(R.id.activity_main_webview);
         swipeRefresh = findViewById(R.id.refreshLayout);
+        mWebView.setDownloadListener(new DownloadListener() {
+
+            @Override
+            public void onDownloadStart(String url, String userAgent,
+                                        String contentDisposition, String mimetype,
+                                        long contentLength) {
+                DownloadManager.Request request = new DownloadManager.Request(
+                        Uri.parse(url));
+
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED); //Notify client once download is completed!
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Uri.parse(url).getPath());
+                DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                dm.enqueue(request);
+                Toast.makeText(getApplicationContext(), "Telechergement du fichier...", //To notify the Client that the file is being downloaded
+                        Toast.LENGTH_LONG).show();
+
+            }
+        });
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -102,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         this.isConnected = isConnected;
         client.isConnected = isConnected;
         if(!isConnected){
-            snackbar = Snackbar.make(swipeRefresh,"You are offline",Snackbar.LENGTH_SHORT);
+            snackbar = Snackbar.make(swipeRefresh,"Vous etes hors ligne!",Snackbar.LENGTH_SHORT);
             snackbar.show();
         }else{
             if(snackbar!=null){
