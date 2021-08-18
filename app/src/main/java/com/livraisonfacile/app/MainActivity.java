@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         client.redirectToOffline = this;
         client.prefs = prefs;
         mWebView.setWebViewClient(client);
+        mWebView.addJavascriptInterface(new WebInterface(this),"Android");
         // REMOTE RESOURCE
         mWebView.loadUrl(prefs.getString("last_visited",url));
 

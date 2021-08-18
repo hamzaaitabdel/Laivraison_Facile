@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -48,6 +49,9 @@ class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
+        if(url.contains("voir_facture")){
+            view.loadUrl("javascript: (function (){document.querySelector('.btn').setAttribute('onclick','Android.printPage()')})()");
+        }
         new Handler(Looper.getMainLooper()).postDelayed(()->{
             loadingDialog.dismiss();
         },1000);
