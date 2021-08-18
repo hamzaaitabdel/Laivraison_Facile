@@ -1,13 +1,9 @@
-package com.azan.laivraisonfacile;
+package com.livraisonfacile.app;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 

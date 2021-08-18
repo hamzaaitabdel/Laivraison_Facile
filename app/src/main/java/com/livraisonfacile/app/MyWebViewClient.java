@@ -1,6 +1,5 @@
-package com.azan.laivraisonfacile;
+package com.livraisonfacile.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;

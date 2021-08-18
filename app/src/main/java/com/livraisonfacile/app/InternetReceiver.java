@@ -1,11 +1,10 @@
-package com.azan.laivraisonfacile;
+package com.livraisonfacile.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.telecom.ConnectionService;
 
 public class InternetReceiver extends BroadcastReceiver {
     public static OnConnectionListener onConnectionListener;
