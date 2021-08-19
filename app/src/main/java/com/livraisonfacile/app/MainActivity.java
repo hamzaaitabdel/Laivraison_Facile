@@ -1,5 +1,6 @@
 package com.livraisonfacile.app;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -9,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.webkit.DownloadListener;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
 
     //TODO change this link HEEEEEEEre!!!!!!!
     public static String url="https://www.codeur.ma/demo/_fh1iow";
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         client.redirectToOffline = this;
         client.prefs = prefs;
         mWebView.setWebViewClient(client);
-        mWebView.addJavascriptInterface(new WebInterface(this),"Android");
+        mWebView.addJavascriptInterface(new WebInterface(this,mWebView.createPrintDocumentAdapter()),"Android");
         // REMOTE RESOURCE
         mWebView.loadUrl(prefs.getString("last_visited",url));
 
