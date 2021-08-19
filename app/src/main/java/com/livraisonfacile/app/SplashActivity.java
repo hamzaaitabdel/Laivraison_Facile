@@ -33,15 +33,7 @@ public class SplashActivity extends AppCompatActivity {
         NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
         if (null != activeNetwork) {
             readArgs();
-            if (verify()){
-                if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE){
-                    //we have WIFI
-                    new Handler().postDelayed(new Runnable() {
-                        @Override public void run() {
-                            Intent i = new Intent(SplashActivity.this, MainActivity.class); startActivity(i);
-                            finish(); } }, 1000);
-                }
-            }
+            verify(activeNetwork);
         } else{
             //we have no connection :(
             Intent intent = new Intent(this,NoNetworkActivity.class);
@@ -53,23 +45,32 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("app_pref", Context.MODE_PRIVATE);
         version = prefs.getString("last_version_apk",null);
         update_link=prefs.getString("apk_name", null);
-        enabled=prefs.getBoolean("statut",true);
+        Log.i("versions ghi mo29ata",prefs.getString("statut","true"));
+        enabled=!Boolean.getBoolean(prefs.getString("statut","true"));
     }
-    public boolean verify(){
-        if(enabled){
-            try {
-                PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-                String v = pInfo.versionName;
-                Log.i("versions-------->",version+"  "+v);
-                if(v.equals(version)){
-                    showUpdateDialogue();
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+    public void verify(NetworkInfo activeNetwork){
+        Log.i("versions-loggong-",enabled+";"+version+";"+update_link);
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String v = pInfo.versionName;
+            Log.i("versions-------->",version+"  "+v);
+            if(!v.equals(version) && !enabled){//matkhdemch app
+                Log.i("versions-Dialogue-","khass iban");
+                showUpdateDialogue();
             }
-            return enabled;
-        }else
-            return false;
+            else{//tkhdem app
+                if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE){
+                    //we have WIFI
+                    new Handler().postDelayed(new Runnable() {
+                        @Override public void run() {
+                            Intent i = new Intent(SplashActivity.this, MainActivity.class); startActivity(i);
+                            finish(); } }, 1000);
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void showUpdateDialogue() {
