@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -49,8 +52,24 @@ class MyWebViewClient extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        if(url.contains("voir_facture")){
+        if(url.contains("voir_")){
             view.loadUrl("javascript: (function (){document.querySelector('.btn').setAttribute('onclick','Android.printPage()')})()");
+        }else if(url.contains("colis_admin")){
+            view.loadUrl("javascript: (function (){document.querySelector('.btn-default').setAttribute('onclick','Android.printPage()')})()");
+        }else if(url.contains("etiquette_admin")) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+
+                try {
+                    PrintManager printManager = null;
+                    printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
+                    PrintDocumentAdapter printAdapter = view.createPrintDocumentAdapter();
+                    String jobName = context.getString(R.string.app_name) + " Print Test";
+                    printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
+
+            }catch(Exception e){
+                Log.i("error printing-->", e.getMessage());
+            }
+        }
         }
         new Handler(Looper.getMainLooper()).postDelayed(()->{
             loadingDialog.dismiss();

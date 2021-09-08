@@ -27,7 +27,6 @@ public class WebInterface {
     public void printPage() {
 
         //todo: change this toat with the printing code
-        Toast.makeText(mContext, "print has been clicked", Toast.LENGTH_SHORT).show();
         createWebPrintJob(printAdapter);
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
