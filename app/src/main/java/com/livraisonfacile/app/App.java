@@ -29,7 +29,7 @@ public class App extends Application {
                         preferences.edit()
                                 .putString("last_version_apk",obj.getString("last_version_apk"))
                                 .putString("apk_name",obj.getString("apk_name"))
-                                .putString("statut",obj.getString("statut"))
+                                .putBoolean("statut",obj.getBoolean("statut"))
                                 .apply();
                         Log.i("versions---",obj.getString("last_version_apk")+"----"+obj.getString("statut"));
                     } catch (JSONException e) {

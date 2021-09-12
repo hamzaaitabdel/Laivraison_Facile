@@ -32,8 +32,14 @@ public class SplashActivity extends AppCompatActivity {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
         if (null != activeNetwork) {
-            readArgs();
-            verify(activeNetwork);
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI ||
+                    activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE){
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        Intent i = new Intent(SplashActivity.this, MainActivity.class); startActivity(i);
+                        finish(); } }, 3000);
+            }
+
         } else{
             //we have no connection :(
             Intent intent = new Intent(this,NoNetworkActivity.class);
@@ -41,85 +47,5 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     }
-    public void readArgs(){
-        SharedPreferences prefs = this.getSharedPreferences("app_pref", Context.MODE_PRIVATE);
-        version = prefs.getString("last_version_apk",null);
-        update_link=prefs.getString("apk_name", null);
-        enabled=Boolean.getBoolean(prefs.getString("statut",null));
-        Log.i("versions ghi mo29ata",""+enabled);
-    }
-    public void verify(NetworkInfo activeNetwork){
-        Log.i("versions-loggong-",enabled+";"+version+";"+update_link);
-        try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String v = pInfo.versionName;
-            Log.i("versions-------->",version+"  "+v);
-            if(!enabled){
-                showDisabledDialogue();
-            }
-            else if(!v.equals(version) && enabled){//matkhdemch app
-                Log.i("versions-Dialogue-","khass iban");
-                showUpdateDialogue();
-            }
-            else{//tkhdem app
-                if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE){
-                    //we have WIFI
-                    new Handler().postDelayed(new Runnable() {
-                        @Override public void run() {
-                            Intent i = new Intent(SplashActivity.this, MainActivity.class); startActivity(i);
-                            finish(); } }, 3000);
 
-                }
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void showUpdateDialogue() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("Mis a jour alert");
-
-        builder.setMessage("vous devez télécharger les dernières mises à jour pour continuer à utiliser cette application")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url+"/"+update_link));
-                        startActivity(browserIntent);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        System.exit(0);
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-    }
-    private void showDisabledDialogue() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("l'application ne fonctionne pas a ce moment");
-
-        builder.setMessage("vous devez quittez l'application")
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        System.exit(0);
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-    }
 }
