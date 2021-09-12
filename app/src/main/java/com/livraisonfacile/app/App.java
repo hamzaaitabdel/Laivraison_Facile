@@ -14,12 +14,12 @@ import org.json.JSONObject;
 
 public class App extends Application {
 
+    static String url = "https://www.codeur.ma/demo/_fh1iow/app/settings_new.json";
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i("versions","url");
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://www.codeur.ma/demo/_fh1iow/app/settings.json";
         Log.i("versions",url);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -31,7 +31,7 @@ public class App extends Application {
                                 .putString("apk_name",obj.getString("apk_name"))
                                 .putString("statut",obj.getString("statut"))
                                 .apply();
-                        Log.i("versions---",obj.getString("last_version_apk"));
+                        Log.i("versions---",obj.getString("last_version_apk")+"----"+obj.getString("statut"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("versions-error",e.getMessage());

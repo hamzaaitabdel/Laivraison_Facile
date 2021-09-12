@@ -1,7 +1,9 @@
 package com.livraisonfacile.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,7 +40,14 @@ class MyWebViewClient extends WebViewClient {
         // TODO Auto-generated method stub
         //Toast.makeText(context,"hii",Toast.LENGTH_LONG).show();
         loadingDialog.show();
+        if (url.startsWith("mailto:")||url.startsWith("tel:")){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(intent);
+            view.goBack();
+            return true;
+        }
         view.loadUrl(url);
+
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = activity.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

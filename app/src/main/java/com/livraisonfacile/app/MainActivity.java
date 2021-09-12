@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         mWebView.addJavascriptInterface(new WebInterface(this,mWebView.createPrintDocumentAdapter()),"Android");
         // REMOTE RESOURCE
         mWebView.loadUrl(prefs.getString("last_visited",url));
-
         // LOCAL RESOURCE
         // mWebView.loadUrl("file:///android_asset/index.html");
 

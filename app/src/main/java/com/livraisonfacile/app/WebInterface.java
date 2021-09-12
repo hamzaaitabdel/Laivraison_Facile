@@ -47,6 +47,7 @@ public class WebInterface {
 
         }catch (Exception e){
             Log.i("error printing-->",e.getMessage());
+            Toast.makeText(mContext,"error printing-->"+e.getMessage(),Toast.LENGTH_SHORT).show();
         }
 
     }
