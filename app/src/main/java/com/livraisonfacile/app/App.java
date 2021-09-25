@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 public class App extends Application {
 
-    static String url = "https://www.codeur.ma/demo/_fh1iow/app/settings_new.json";
+    static String url = "https://www.codeur.ma/demo/_fh1iow/app/settings.json";
     @Override
     public void onCreate() {
         super.onCreate();
