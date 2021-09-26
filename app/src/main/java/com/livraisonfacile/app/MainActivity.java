@@ -112,17 +112,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         mWebView.addJavascriptInterface(new WebInterface(this,mWebView.createPrintDocumentAdapter()),"Android");
         // REMOTE RESOURCE
         mWebView.loadUrl(prefs.getString("last_visited",url));
-        try {
-            Log.i("OneSignal-ERRRRORR-",getCookieFromAppCookieManager(url).toString());
-            if (getCookieFromAppCookieManager(url)!=null){
-                Log.i("OneSignal-ERRRRORR-","getCookieFromAppCookieManager(url)!=null");
-                initOneSignal(getUserInfo("/index.php?am=enligne"));
-                Log.i("OneSignal-ERRRRORR-","data sent");
-            }
-        } catch (MalformedURLException e) {
-            Log.i("OneSignal-ERRRRORR-",e.getMessage());
-            e.printStackTrace();
-        }
+
         // LOCAL RESOURCE
         // mWebView.loadUrl("file:///android_asset/index.html");
 
@@ -255,48 +245,5 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         alertDialog.setCancelable(false);
         alertDialog.show();
     }
-    public String[] getUserInfo(String sublink){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String res[]=new String[3];
-        Log.i("OneSignal-ERRRRORR-",url+sublink);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url+sublink,
-                response -> {
-                    try {
-                        //Log.i("OneSignal-ERRRRORR-",response.toString());
-                        JSONObject obj = new JSONObject(response);
-                        res[0]=obj.getString("idu");
-                        res[1]=obj.getString("nom");
-                        res[2]=obj.getString("niveau");
-                        Log.i("OneSignal-ERRRRORR-E","Data pulled"+res[0]+":"+res[1]+":"+res[2]);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("OneSignal-ERRRRORR-",e.getMessage());
-                    }
 
-                }, error -> {
-            Log.i("versions---", String.valueOf(error));
-        });
-        queue.add(stringRequest);
-        return res;
-    }
-    public static String getCookieFromAppCookieManager(String url) throws MalformedURLException {
-
-        CookieManager cookieManager = CookieManager.getInstance();
-        if (cookieManager == null)
-            return null;
-        String rawCookieHeader = null;
-        URL parsedURL = new URL(url);
-        rawCookieHeader = cookieManager.getCookie(parsedURL.getHost());
-        if (rawCookieHeader == null)
-            return null;
-        return rawCookieHeader;
-    }
-    private void initOneSignal(String[] s) {
-        OneSignal.initWithContext(this);
-        OneSignal.setAppId("60bfcbcb-8379-483a-b514-96fa2b60f198");
-        OneSignal.sendTag("player_id", s[0]);
-        OneSignal.sendTag("nom", s[1]);
-        OneSignal.sendTag("niveau", s[2]);
-        Log.i("OneSignal-ERRRRORR-","Tag sent!");
-    }
 }

@@ -41,14 +41,27 @@ class MyWebViewClient extends WebViewClient {
     public boolean isConnected = true;
     public OnRedirectToOffline redirectToOffline;
     public SharedPreferences prefs;
+    private String test_link="https://www.codeur.ma/demo/_fh1iow/index.php?am=colis_admin";
     public void requestWithSomeHttpHeaders(String cookies) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        StringRequest getRequest = new StringRequest(Request.Method.GET, "https://www.codeur.ma/demo/_fh1iow/index.php?am=colis_admin",
+        StringRequest getRequest = new StringRequest(Request.Method.GET, test_link,
                 new Response.Listener<String>()
                 {
                     @Override
                     public void onResponse(String response) {
                         // response
+                        if (!response.contains("<p>Entrez votre adresse email ci-dessous ")){
+                            Log.i("result-----","does not contains!!!!!!!!!");
+                            //todo send datato OneSignal
+                            OneSignalUtils.context=context;
+                            String array[]=OneSignalUtils.getUserInfo("/index.php?am=enligne",cookies);
+                            Log.i("hamza",array[0]+"-"+array[1]+"-"+array[2]);
+                            OneSignalUtils.initOneSignal(array);
+                            Log.i("Response-Request1331-D-", "response sent to server");
+                        }
+                        else{
+                            Log.i("result-----","contains!!!!!!!!!");
+                        }
                         Log.i("Response-Request1331-", response);
                     }
                 },
@@ -64,7 +77,7 @@ class MyWebViewClient extends WebViewClient {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("cookie", cookies);
+                params.put("Cookie", cookies);
                 Log.i("-Request1331-",cookies);
                 return params;
             }
