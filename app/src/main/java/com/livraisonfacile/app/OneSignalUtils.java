@@ -1,15 +1,19 @@
 package com.livraisonfacile.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.onesignal.OSNotificationOpenedResult;
 import com.onesignal.OneSignal;
+import com.onesignal.OneSignalNotificationManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,10 +27,14 @@ import static com.livraisonfacile.app.MainActivity.url;
 
 public class OneSignalUtils {
     public static Context context;
+    public static String one_signal_id="";
+    public interface OnResponse{
+        void onResponse(String[] response);
+    }
     public OneSignalUtils(Context c){
         context=c;
     }
-    public static String[] getUserInfo(String sublink,String cookies){
+    public static String[] getUserInfo(String sublink,String cookies,OnResponse cb){
         RequestQueue queue = Volley.newRequestQueue(context);
         String res[]=new String[3];
         Log.i("OneSignal-ERRRRORR-",url+sublink);
@@ -38,6 +46,7 @@ public class OneSignalUtils {
                         res[0]=obj.getString("idu");
                         res[1]=obj.getString("nom");
                         res[2]=obj.getString("niveau");
+                        cb.onResponse(res);
                         Log.i("OneSignal-ERRRRORR-E","Data pulled"+res[0]+":"+res[1]+":"+res[2]);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -58,12 +67,13 @@ public class OneSignalUtils {
             }
         };
         queue.add(stringRequest);
+
         return res;
         //TODO ligltlek
         /*
         *daba had reshwa table lifih data d user bachnssiftha l OneSignal server
         * fach kanafficher dikdata f ster 41katban3adi walakin fach katreturna lMyWebViewClient.java katkhrej null null null
-        * 
+        *
          */
     }
     public static String getCookieFromAppCookieManager(String url) throws MalformedURLException {
@@ -79,11 +89,14 @@ public class OneSignalUtils {
         return rawCookieHeader;
     }
     public static void initOneSignal(String[] s) {
+        SharedPreferences prefs = context.getSharedPreferences("app_pref", Context.MODE_PRIVATE);
+        Log.i("OneSignal-OneSignal",prefs.getString("onesignal_app_id",""));
         OneSignal.initWithContext(context);
-        OneSignal.setAppId("60bfcbcb-8379-483a-b514-96fa2b60f198");
-        OneSignal.sendTag("player_id", s[0]);
+        OneSignal.setAppId(prefs.getString("onesignal_app_id",""));
+        OneSignal.sendTag("idu", s[0]);
         OneSignal.sendTag("nom", s[1]);
         OneSignal.sendTag("niveau", s[2]);
         Log.i("OneSignal-ERRRRORR-","Tag sent!->"+s[0]+"-"+s[1]+"-"+s[2]);
     }
+
 }

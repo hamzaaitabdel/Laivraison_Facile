@@ -54,10 +54,16 @@ class MyWebViewClient extends WebViewClient {
                             Log.i("result-----","does not contains!!!!!!!!!");
                             //todo send datato OneSignal
                             OneSignalUtils.context=context;
-                            String array[]=OneSignalUtils.getUserInfo("/index.php?am=enligne",cookies);
-                            Log.i("hamza",array[0]+"-"+array[1]+"-"+array[2]);
-                            OneSignalUtils.initOneSignal(array);
-                            Log.i("Response-Request1331-D-", "response sent to server");
+                            String[] array =new String[3];
+                            OneSignalUtils.getUserInfo("/index.php?am=enligne",cookies,onResponse->{
+                                array[0]=onResponse[0];
+                                array[1]=onResponse[1];
+                                array[2]=onResponse[2];
+                                Log.i("hamza-hh",onResponse[0]+"-"+onResponse[1]+"-"+onResponse[2]);
+                                Log.i("hamza",array[0]+"-"+array[1]+"-"+array[2]);
+                                Log.i("Response-Request1331-D-", "response sent to server");
+                                OneSignalUtils.initOneSignal(array);
+                            });
                         }
                         else{
                             Log.i("result-----","contains!!!!!!!!!");
@@ -104,13 +110,7 @@ class MyWebViewClient extends WebViewClient {
         }
         view.loadUrl(url);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = activity.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(activity.getResources().getColor(R.color.statue_bar_color));
-            Log.i("COLOR----->",view.getSolidColor()+"");
-        }
+
         return true;
     }
 
@@ -118,7 +118,7 @@ class MyWebViewClient extends WebViewClient {
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
         String cookies= CookieManager.getInstance().getCookie(url);
-        Log.i("Cookies===",cookies);
+        Log.i("Cookies===",cookies+"");
         requestWithSomeHttpHeaders(cookies);
         if(url.contains("voir_")){
             view.loadUrl("javascript: (function (){document.querySelector('.btn').setAttribute('onclick','Android.printPage()')})()");
