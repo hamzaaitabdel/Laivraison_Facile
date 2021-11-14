@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:name="com.livraisonfacile.app.App"
         android:theme="@style/Theme.LaivraisonFacile">
-
+        <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" />
+        <meta-data android:name="com.onesignal.NotificationAccentColor.DEFAULT" android:value="#0BC6FD" />
         <activity
             android:name=".NoNetworkActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

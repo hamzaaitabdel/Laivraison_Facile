@@ -104,13 +104,14 @@ class MyWebViewClient extends WebViewClient {
         loadingDialog.show();
         if (url.startsWith("mailto:")||url.startsWith("tel:")){
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            Log.i("l9lawi_dzb_1", String.valueOf(url.startsWith("mailto:")||url.startsWith("tel:")));
             context.startActivity(intent);
-            view.goBack();
             return true;
+        }else if(!url.startsWith("mailto:") && !url.startsWith("tel:")){
+            Log.i("l9lawi_dzb_2",String.valueOf(url.startsWith("mailto:")||url.startsWith("tel:")));
+            view.loadUrl(url);
+            return false;
         }
-        view.loadUrl(url);
-
-
         return true;
     }
 
@@ -152,10 +153,11 @@ class MyWebViewClient extends WebViewClient {
             redirectToOffline.onRedirectToOffline();
             return false;
         }
-        if(!url.equals("file:///android_asset/pas_de_connexion.html")){
+        if(!url.equals("file:///android_asset/pas_de_connexion.html")&&!url.contains("tel:")){
             prefs.edit()
                     .putString("last_visited",url)
                     .apply();
+            Log.i("l9lawi_dzb_hadoo","vri alkhawa");
         }
         return super.shouldOverrideUrlLoading(view, request);
     }

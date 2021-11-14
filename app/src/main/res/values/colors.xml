@@ -10,4 +10,6 @@
     <color name="statue_bar_color">#0BC6FD</color>
     <color name="text2">#00365C</color>
     <color name="color2">#0bc6fd</color>
+    <color name="onesignal_bgimage_notif_title_color">#0BC6FD</color>
+    <color name="onesignal_bgimage_notif_body_color"></color>
 </resources>

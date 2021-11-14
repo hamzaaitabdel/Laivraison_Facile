@@ -61,6 +61,13 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     boolean enabled=true;
     //TODO change this link HEEEEEEEre!!!!!!!
     public static String url="https://www.codeur.ma/demo/_fh1iow";
+
+    @Override
+    public void setRequestedOrientation(int requestedOrientation) {
+        super.setRequestedOrientation(requestedOrientation);
+        Toast.makeText(this,"Ssssssss",Toast.LENGTH_LONG).show();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
         setContentView(R.layout.activity_main);
         // OneSignal Initialization
         prefs = getSharedPreferences("app_prefs",MODE_PRIVATE);
-
+        Log.i("Rotation-debug",prefs.getString("last_visited",url));
         Timer timer=new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -198,7 +205,9 @@ public class MainActivity extends AppCompatActivity implements InternetReceiver.
     @Override
     protected void onResume() {
         super.onResume();
+        mWebView.loadUrl(prefs.getString("last_visited",url));
         InternetReceiver.onConnectionListener = this;
+
     }
 
     @Override
