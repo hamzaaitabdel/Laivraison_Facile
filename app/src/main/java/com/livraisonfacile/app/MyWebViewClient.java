@@ -17,6 +17,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -120,25 +121,32 @@ class MyWebViewClient extends WebViewClient {
         super.onPageFinished(view, url);
         String cookies= CookieManager.getInstance().getCookie(url);
         Log.i("Cookies===",cookies+"");
+        Log.i("hahya akhay aji diha",url);
         requestWithSomeHttpHeaders(cookies);
         if(url.contains("voir_")){
             view.loadUrl("javascript: (function (){document.querySelector('.btn').setAttribute('onclick','Android.printPage()')})()");
-        }else if(url.contains("colis_admin")){
+        }else if(url.contains("colis")){
+            Log.i("hahya akhay aji diha","lhrba wkhlass  colis");
+            view.loadUrl("javascript: (function (){window.addEventListener('load',()=>Android.printPage())})()");
+            //view.loadUrl("javascript: (function(){window.addEventListener('load',Android.printPage)})()");
+            //view.loadUrl("javascript: (function (){document.querySelector('.btn-default').setAttribute('onclick','Android.printPage()')})()");
+        }else if(url.contains("etiquette")) {
+            //view.loadUrl("(function(){window.addEventListener('load',Android.printPage)})()");
             view.loadUrl("javascript: (function (){document.querySelector('.btn-default').setAttribute('onclick','Android.printPage()')})()");
-        }else if(url.contains("etiquette_admin")) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-
-                try {
-                    PrintManager printManager = null;
-                    printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
-                    PrintDocumentAdapter printAdapter = view.createPrintDocumentAdapter();
-                    String jobName = context.getString(R.string.app_name) + " Print Test";
-                    printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
-
-            }catch(Exception e){
-                Log.i("error printing-->", e.getMessage());
-            }
-        }
+            Log.i("hahya akhay aji diha","lhrba wkhlass");
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//
+//                try {
+//                    PrintManager printManager = null;
+//                    printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
+//                    PrintDocumentAdapter printAdapter = view.createPrintDocumentAdapter();
+//                    String jobName = context.getString(R.string.app_name) + " Print Test";
+//                    printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
+//
+//            }catch(Exception e){
+//                Log.i("error printing-->", e.getMessage());
+//            }
+//        }
         }
         new Handler(Looper.getMainLooper()).postDelayed(()->{
             loadingDialog.dismiss();
